@@ -1,0 +1,46 @@
+<?php defined('SYSPATH') or die('No direct script access.');
+
+class Model_Companyinfo extends MODEL {
+	
+	public function addcompany($companyname)
+	{
+		//Validation
+		
+		if (!empty($_POST)) 
+		{
+			$companytosave = Validate::factory($_POST)
+			->filter(TRUE, 'trim')
+			->rule('companyname', 'not_empty');
+		}
+		
+		//after validate
+		if($companytosave->check())
+		{
+			$companylist = ORM::factory('companylist');
+			$companylist->companyname = $companyname;
+			$companylist->save();
+		}
+	}
+	
+	public function editcompany()
+	{
+		$companylist = ORM::factory('companylist', $companyid);
+		if($companylist->loaded())
+		{
+			$companylist->set('companyname', $companyname)->update();
+		}
+	}
+	
+	public function getcompanylist()
+	{
+		$companylist = Model::factory('companylist')
+						-> find_all();
+	}
+	
+	public function deletecompany($companyid=NULL)
+	{
+		$companylist = ORM::factory('companylist', $companyid);
+		$companylist->delete();
+	}
+	
+}
